@@ -15,7 +15,7 @@ $(function() {
     
     $.ajax({
       type: "GET",
-      url: `/data?from=${timeFrom}&to=${timeTo}`,
+      url: `/pingpong/data?from=${timeFrom}&to=${timeTo}`,
       success: function (data) {
         drawChart(data);
       }
