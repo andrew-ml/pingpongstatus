@@ -36,7 +36,7 @@ $(function() {
     chartElement.innerHTML = '';
 
     let x = d3.scaleBand()
-      .domain([timeFrom, timeTo])
+      .domain(data.map(d => d.time))
       .rangeRound([0, width])
       .padding(0.1);
 
