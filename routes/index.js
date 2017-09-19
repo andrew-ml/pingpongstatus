@@ -26,12 +26,3 @@ router.post('/data', function(req, res, next) {
 });
 
 module.exports = router;
-
-
-// setInterval(function(){$.ajax({
-//   type: "POST",
-//   url: 'http://localhost:3004/data',
-//   data: JSON.stringify([234,231,233]),
-//   contentType: "application/json",
-//   dataType: 'json'
-// });}, 2000)

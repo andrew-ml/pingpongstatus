@@ -1,8 +1,17 @@
 body {
-  padding: 50px;
+  padding: 40px 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+.page-title {
+	margin-left: 23px;
+}
+
+.x.axis .tick {
+	font-family: monospace;
+	font-size: 9px;
 }

@@ -27,18 +27,19 @@ $(function() {
   setInterval(fetchData, 2000);
 
   function drawChart(data) {
-    let width = 800;
-    let height = 200;
-    let minValue = 0;
-    let maxValue = 100;
-    let margin = {top: 28, right: 30, bottom: 45, left: 20};
+    const width = 800;
+    const height = 200;
+    const minValue = 0;
+    const maxValue = 100;
+    const margin = {top: 28, right: 30, bottom: 45, left: 45};
+    const barWidth = 3;
     let chartElement = document.querySelector('#chartTarget');
+
     chartElement.innerHTML = '';
 
-    let x = d3.scaleBand()
-      .domain(data.map(d => d.time))
-      .rangeRound([0, width])
-      .padding(0.1);
+    let x = d3.scaleLinear()
+      .domain([timeFrom, timeTo])
+      .rangeRound([0, width]);
 
     let y = d3.scaleLinear()
       .domain([minValue, maxValue])
@@ -56,7 +57,7 @@ $(function() {
       .tickFormat(d => {
         let date = new Date(d);
         const oo = (val) => val < 10 ? `0${val}` : val;
-        return `${oo(date.getHours())} : ${oo(date.getMinutes())}`;
+        return `${oo(date.getHours())}:${oo(date.getMinutes())}`;
       });
 
     let svg = d3.select(chartElement).append('svg')
@@ -71,8 +72,9 @@ $(function() {
         .attr("class", "bar")
         .attr("x", function(d) { return x(d.time); })
         .attr("y", function(d) { return y(d.value); })
-        .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.value); });
+        .attr("width", barWidth)
+        .attr("height", function(d) { return height - y(d.value); })
+        .attr('fill', '#00aa00');
 
     svg.append('g')
       .attr('class', 'x axis no-grid no-domain')
@@ -87,15 +89,15 @@ $(function() {
       .attr('class', 'legend-label')
       .attr('style', 'visibility: visible; font-size: 15px;')
       .attr('transform', `translate(${width / 2}, ${height + margin.top + 9})`)
-      .style('text-anchor', 'middle')
-      .text('time');
+      .style('text-anchor', 'middle');
+      // .text('time');
 
     svg.append('text')
       .attr('class', 'legend-label')
       .attr('style', 'visibility: visible; font-size: 15px;')
       .attr('transform', 'rotate(-90)')
       .attr('x', 0 - (height / 2))
-      .attr('y', -27)
+      .attr('y', -30)
       .style('text-anchor', 'middle')
       .text('activity');
 
