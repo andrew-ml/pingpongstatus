@@ -72,7 +72,7 @@ $(function() {
         .attr("x", function(d) { return x(d.time); })
         .attr("y", function(d) { return y(d.value); })
         .attr("width", x.bandwidth())
-        .attr("height", function(d) { return height - y(d.frequency); });
+        .attr("height", function(d) { return height - y(d.value); });
 
     svg.append('g')
       .attr('class', 'x axis no-grid no-domain')
