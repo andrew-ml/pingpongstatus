@@ -5,7 +5,7 @@ $(function() {
   let timeFrom;
   
   function setTime() {
-    timeDelta = 720000; //7200000 = 120 min
+    timeDelta = 1200000; // 20 min
     timeTo = (new Date).getTime();
     timeFrom = timeTo - timeDelta;
   }
