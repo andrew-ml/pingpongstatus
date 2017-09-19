@@ -17,6 +17,7 @@ $(function() {
       type: "GET",
       url: `/pingpong/data?from=${timeFrom}&to=${timeTo}`,
       success: function (data) {
+        
         drawChart(data);
       }
     });
@@ -34,9 +35,10 @@ $(function() {
     let chartElement = document.querySelector('#chartTarget');
     chartElement.innerHTML = '';
 
-    let x = d3.scaleLinear()
+    let x = d3.scaleBand()
       .domain([timeFrom, timeTo])
-      .rangeRound([0, width]);
+      .rangeRound([0, width])
+      .padding(0.1);
 
     let y = d3.scaleLinear()
       .domain([minValue, maxValue])
@@ -63,14 +65,14 @@ $(function() {
       .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    let area = d3.area()
-      .x(d => x(d.time))
-      .y0(height)
-      .y1(d => y(d.value));
-
-    svg.append('path')
-      .attr('fill', '#00aa00')
-      .attr('d', area(data));
+    svg.selectAll(".bar")
+      .data(data)
+      .enter().append("rect")
+        .attr("class", "bar")
+        .attr("x", function(d) { return x(d.time); })
+        .attr("y", function(d) { return y(d.value); })
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(d.frequency); });
 
     svg.append('g')
       .attr('class', 'x axis no-grid no-domain')
@@ -103,92 +105,6 @@ $(function() {
     svg.selectAll('.axis.no-grid   .domain').style('display', 'none');
     svg.selectAll('.axis.no-grid line').style('display', 'none');
   }
-  // function D3chart() {
-  //   var limit = 60 * 1,
-  //       duration = 750,
-  //       now = new Date(Date.now() - duration)
 
-  //   var width = 1000,
-  //       height = 500
-
-  //   var groups = {
-  //       current: {
-  //           value: 0,
-  //           color: 'orange',
-  //           data: d3.range(limit).map(function() {
-  //               return 0
-  //           })
-  //       }
-  //   }
-
-  //   var x = d3.time.scale()
-  //       .domain([now - (limit - 2), now - duration])
-  //       .range([0, width])
-
-  //   var y = d3.scale.linear()
-  //       .domain([0, 2000])
-  //       .range([height, 0])
-
-  //   var line = d3.svg.line()
-  //       .interpolate('basis')
-  //       .x(function(d, i) {
-  //           return x(now - (limit - 1 - i) * duration)
-  //       })
-  //       .y(function(d) {
-  //           return y(d)
-  //       })
-
-  //   var svg = d3.select('#chartTarget').append('svg')
-  //       .attr('class', 'chart')
-  //       .attr('width', width)
-  //       .attr('height', height + 50)
-
-  //   var axis = svg.append('g')
-  //       .attr('class', 'x axis')
-  //       .attr('transform', 'translate(0,' + height + ')')
-  //       .call(x.axis = d3.svg.axis().scale(x).orient('bottom'))
-
-  //   var paths = svg.append('g')
-
-  //   for (var name in groups) {
-  //       var group = groups[name]
-  //       group.path = paths.append('path')
-  //           .data([group.data])
-  //           .attr('class', name + ' group')
-  //           .style('stroke', group.color)
-  //   }
-
-  //   D3chart.prototype.tick = function(values) {
-  //     now = new Date()
-
-  //       // Add new values
-  //       for (var name in groups) {
-  //           var group = groups[name];
-  //           [].push.apply(group.data, values)
-  //           group.path.attr('d', line)
-  //       }
-
-  //       // Shift domain
-  //       x.domain([now - (limit - 2) * duration, now - duration])
-
-  //       // Slide x-axis left
-  //       axis.transition()
-  //           .duration(duration)
-  //           .ease('linear')
-  //           .call(x.axis)
-
-  //       // Slide paths left
-  //       paths.attr('transform', null)
-  //           .transition()
-  //           .duration(duration)
-  //           .ease('linear')
-  //           .attr('transform', 'translate(' + x(now - (limit - 1) * duration) + ')')
-
-  //       for (var name in groups) {
-  //           var group = groups[name]
-  //           group.data.shift()
-  //       }
-  //   }
-  // }
 });
 
