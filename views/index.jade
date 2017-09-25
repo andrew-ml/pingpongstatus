@@ -1,5 +1,12 @@
 extends layout
 
 block content
-  h1.page-title Ping pong activity
+  h1.page-title
+    | Ping pong activity
+    .select-time.js-select-time
+      a.active(href='#' data-time-min='30') 30 mins
+      a(href='#' data-time-min='60') 1 hour
+      a(href='#' data-time-min='360') 6 hours
+      a(href='#' data-time-min='1440') 1 day
+      a(href='#' data-time-min='2880') 2 days
   #chartTarget

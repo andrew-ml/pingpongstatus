@@ -1,17 +1,49 @@
 body {
-  padding: 40px 50px;
+  padding: 30px 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
-  color: #00B7FF;
+  color: #67b5d4;
 }
 
 .page-title {
-	margin-left: 23px;
+  margin-left: 23px;
 }
 
 .x.axis .tick {
-	font-family: monospace;
-	font-size: 9px;
+  font-family: monospace;
+  font-size: 9px;
+}
+
+.select-time {
+  float: right;
+}
+.select-time a {
+  display: inline-block;
+  margin-left: 10px;
+  font-size: 11px;
+  font-weight: 400;
+  text-decoration: none;
+}
+.select-time a:first-child {
+  margin-left: 0;
+}
+.select-time a.active {
+  color: #00a900;
+}
+
+@media screen and (max-width: 1000px) {
+  body {
+    padding: 10px 10px;
+  }
+  .page-title {
+    font-size: 18px;
+  }
+}
+@media screen and (max-width: 500px) {
+  .select-time {
+    margin-top: 10px;
+    float: none;
+  }
 }

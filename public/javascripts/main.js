@@ -1,11 +1,10 @@
 $(function() {
   // var d3Chart = new D3chart();
-  let timeDelta;
+  let timeDelta = 30 * 60000; // 30 min;
   let timeTo;
   let timeFrom;
-  
+
   function setTime() {
-    timeDelta = 1200000; // 20 min
     timeTo = (new Date).getTime();
     timeFrom = timeTo - timeDelta;
   }
@@ -15,29 +14,65 @@ $(function() {
     
     $.ajax({
       type: "GET",
-      url: `data?from=${timeFrom}&to=${timeTo}`,
+      url: `http://iot.kha.dataart.com/pingpong/data?from=${timeFrom}&to=${timeTo}`,
       success: function (data) {
-        
-        drawChart(data);
+        const cleanedUpData = cleanUpData(data);
+        drawChart(cleanedUpData);
       }
     });
   }
+
+  function cleanUpData(data) {
+    const INTERVAL = 10000 // 10 sec
+    const l = data.length;
+
+    if (l < 2) {
+      return [];
+    }
+
+    for (let i = 1; i < data.length - 1; i++) {
+      if (data[i].time - data[i - 1].time > INTERVAL &&
+          data[i + 1].time - data[i].time > INTERVAL) {
+        data[i].value = 0;
+      }
+    }
+
+    if (data[1].time - data[0].time > INTERVAL) {
+      data[1].value = 0;
+    }
+
+    if (data[l - 1].time - data[l - 2].time > INTERVAL) {
+      data[l - 1].value = 0;
+    }
+
+    return data;
+  }
+
+  $('.js-select-time a').on('click', function (e) {
+    let $el = $(this);
+    e.preventDefault();
+    const mins = $el.data('time-min');
+    timeDelta = mins * 60000;
+    $el.siblings().removeClass('active');
+    $el.addClass('active');
+  });
 
   setTime();
   setInterval(fetchData, 2000);
 
   function drawChart(data) {
-    const width = 800;
+    let chartElement = document.querySelector('#chartTarget');
+    const width = chartElement.offsetWidth;
+
     const height = 200;
     const minValue = 0;
     const maxValue = 100;
     const margin = {top: 28, right: 30, bottom: 45, left: 45};
     const barWidth = 3;
-    let chartElement = document.querySelector('#chartTarget');
 
     chartElement.innerHTML = '';
 
-    let x = d3.scaleLinear()
+    let x = d3.scaleTime()
       .domain([timeFrom, timeTo])
       .rangeRound([0, width]);
 
@@ -52,16 +87,11 @@ $(function() {
       .tickPadding(6);
 
     let xAxis = d3.axisBottom(x)
-      .ticks(6)
-      .tickPadding(2)
-      .tickFormat(d => {
-        let date = new Date(d);
-        const oo = (val) => val < 10 ? `0${val}` : val;
-        return `${oo(date.getHours())}:${oo(date.getMinutes())}`;
-      });
+      .ticks(8)
+      .tickPadding(2);
 
     let svg = d3.select(chartElement).append('svg')
-      .attr('width', width + margin.left + margin.right)
+      .attr('width', width)
       .attr('height', height + margin.top + margin.bottom)
       .append('g')
         .attr('transform', `translate(${margin.left},${margin.top})`);
